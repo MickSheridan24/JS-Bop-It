@@ -1,5 +1,17 @@
+* {
+  font-family: "Comic Sans MS", cursive;
+}
+
 span {
-  font-size: 30px;
+  font-size: 1.5em;
+}
+
+#it {
+  font-size: 45px;
+  position: fixed;
+  top: 40%;
+  left: 45%;
+  color: blue;
 }
 
 .untyped {
@@ -9,74 +21,22 @@ span {
 .typed {
   color: greenyellow;
 }
-
-#grid-of-grids {
-  min-width: 100vw;
-  min-height: 90vh;
-
-  display: grid;
-  grid-gap: 5px;
-
-  align-items: stretch;
-  grid-template-areas:
-    "a b"
-    "c d";
+.behind {
+  background: #ff020238;
+  border-radius: 25px;
 }
 
-#grid0 {
-  grid-area: a;
-  /* background: blue; */
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-
-  /* grid-template-areas:
-    "0 1 2 3"
-    "4 5 6 7"
-    "8 9 10 11"; */
-}
-#grid1 {
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-
-  grid-area: b;
-  /* background: green; */
-  display: grid;
-  /* grid-template-areas:
-    "0 1 2 3"
-    "4 5 6 7"
-    "8 9 10 11"; */
-}
-#grid2 {
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-
-  grid-area: c;
-  /* background: red; */
-  display: grid;
-  /* grid-template-areas:
-    "0 1 2 3"
-    "4 5 6 7"
-    "8 9 10 11"; */
-}
-#grid3 {
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-
-  grid-area: d;
-  /* background: pink; */
-  display: grid;
-  /* grid-template-areas:
-    "0 1 2 3"
-    "4 5 6 7"
-    "8 9 10 11"; */
-}
-
-.grid-item {
-  display: inline-grid;
+#board {
+  width: 80em;
+  height: 40em;
+  margin: 5em;
   /* background: aqua; */
-  text-align: center;
 }
+
+.word-card {
+  position: fixed;
+}
+
 .container {
   display: inline;
 }

@@ -1,3 +1,4 @@
+console.log("I'm going mad");
 const COMMANDS = ["Bop", "Spin", "Twist", "Pull", "Flick", "Shake"];
 const ADDITIONAL = [
   "Buy",
@@ -36,8 +37,6 @@ const getCommand = () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("Hello World");
-
   const words = [];
   const add = setInterval(() => {
     if (ADDITIONAL.length > 0) {
@@ -54,9 +53,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }, 4000);
-  setInterval(() => {
-    words.push(runGame(words));
-  }, 2000);
+
+  const gameTimer = setInterval(() => {
+    for (word of words) {
+      word.currentTime++;
+      if (word.currentTime === word.timer) {
+        word.currentTime = 0;
+        word.progress();
+      }
+    }
+  }, 250);
+  runGame(words);
+
   document.addEventListener("keydown", e => {
     for (word of words) {
       word.check(e.key);
@@ -64,54 +72,113 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function makeWord(given) {
-  const gridIndex = Math.floor(Math.random() * 12);
-  const section = getGrid(Math.floor(Math.random() * 4));
-  const container = section.children[gridIndex];
-  const untyped = document.createElement("span");
-  const it = document.createElement("span");
-  it.textContent = " It!";
-  untyped.setAttribute("class", "untyped");
-  it.setAttribute("class", "untyped");
-  const typed = document.createElement("span");
-  typed.setAttribute("class", "typed");
-  container.setAttribute("class", "grid-item");
-  container.style = `grid-area: ${Math.floor(Math.random() * 12)}`;
-  container.appendChild(typed);
-  container.appendChild(untyped);
-  container.appendChild(it);
-  const str = given;
-  untyped.innerText = str;
-  typed.innerText = "";
-  container.addEventListener("keydown", e => {});
+function makeWord(given, timer, salt = false) {
+  //Produce the Divs and spans
+  const board = getBoard();
+  const xPoint = Math.floor(Math.random() * board.clientWidth);
+  const yPoint = Math.floor(Math.random() * board.clientHeight);
+
+  const container = document.createElement("div");
+  container.setAttribute("class", "word-card");
+  container.style = `left: ${xPoint}px; top: ${yPoint}px`;
+
+  const aheadSpan = document.createElement("span");
+  const behindSpan = document.createElement("span");
+  const untypedAhead = document.createElement("span");
+  const typedAhead = document.createElement("span");
+  const untypedBehind = document.createElement("span");
+  const typedBehind = document.createElement("span");
+
+  untypedAhead.setAttribute("class", "untyped");
+  untypedBehind.setAttribute("class", "untyped");
+  typedAhead.setAttribute("class", "typed");
+  typedBehind.setAttribute("class", "typed");
+  behindSpan.setAttribute("class", "behind");
+  aheadSpan.setAttribute("class", "ahead");
+
+  behindSpan.appendChild(typedBehind);
+  behindSpan.appendChild(untypedBehind);
+  aheadSpan.appendChild(typedAhead);
+  aheadSpan.appendChild(untypedAhead);
+
+  container.appendChild(behindSpan);
+  container.appendChild(aheadSpan);
+
+  const givenString = given;
+  let untypedString = given;
+  let typedString = "";
+  let timerString = "";
+
+  untypedAhead.innerText = givenString;
+  typedAhead.innerText = "";
+  typedBehind.innerText = "";
+  untypedBehind.innerText = "";
 
   const word = {
     isComplete: false,
     container: container,
-    untyped: untyped,
-    typed: typed,
-    str: str,
+    behindSpan: behindSpan,
+    aheadSpan: aheadSpan,
+    typedAhead: typedAhead,
+    typedBehind: typedBehind,
+    untypedAhead: untypedAhead,
+    untypedBehind: untypedBehind,
+    untypedString: untypedString,
+    typedString: typedString,
+    givenString: givenString,
+    timerString: "",
+    timer: timer,
+    currentTime: 0,
+    timerLetter: function() {
+      this.timer / this.givenString.length;
+    },
+
     check: function(key) {
-      console.log(key);
       if (!this.isComplete) {
-        if (
-          key.toUpperCase() === this.untyped.innerText.charAt(0).toUpperCase()
-        ) {
-          this.typed.innerText += this.untyped.innerText.charAt(0);
-          this.untyped.innerText = this.untyped.innerText.substr(1);
-          if (this.untyped.innerText.length <= 0) {
-            this.complete();
+        if (key.toUpperCase() === this.untypedString.charAt(0).toUpperCase()) {
+          this.typedString += this.untypedString.charAt(0);
+          this.untypedString = this.untypedString.substr(1);
+          if (this.timerString.length >= this.typedString.length) {
+            this.untypedBehind.innerText = this.untypedBehind.innerText.substr(
+              1
+            );
+            this.typedBehind.innerText = this.typedString;
+          } else {
+            this.typedAhead.innerText += this.untypedAhead.innerText.charAt(0);
+            this.untypedAhead.innerText = this.untypedAhead.innerText.substr(1);
           }
+        }
+        if (this.typedString === this.givenString) {
+          this.complete();
+        }
+      }
+    },
+    progress: function() {
+      console.log(
+        "progressing",
+        "Timer",
+        this.timerString,
+        "Given",
+        this.givenString
+      );
+      if (
+        this.timerString.length === this.givenString.length &&
+        !this.isComplete
+      ) {
+        alert("Game Over");
+      } else {
+        this.timerString += this.givenString.charAt(this.timerString.length);
+        if (this.timerString.length > this.typedString.length) {
+          this.untypedBehind.innerText += this.untypedAhead.innerText.charAt(0);
+          this.untypedAhead.innerText = this.untypedAhead.innerText.substr(1);
         } else {
-          this.untyped.innerText = this.str;
-          this.typed.innerText = "";
+          this.typedBehind.innerText += this.typedAhead.innerText.charAt(0);
+          this.typedAhead.innerText = this.typedAhead.innerText.substr(1);
         }
       }
     },
     complete: function() {
-      while (this.container.firstChild) {
-        this.container.removeChild(this.container.firstChild);
-      }
+      this.container.remove();
       const score = getScore();
       score.textContent = parseInt(score.textContent) + 1;
       this.isComplete = true;
@@ -129,39 +196,31 @@ function getScore() {
   return document.getElementById("score");
 }
 
-function getGrid(num) {
-  return document.getElementById(`grid${num}`);
+function getBoard() {
+  return document.getElementById("board");
+}
+function fixWord() {
+  const word = makeWord(getCommand(), 4);
+  const board = getBoard();
+  board.appendChild(word.container);
+  return word;
 }
 
-(function buildGrid() {
-  const grid1 = getGrid(1);
-  const grid2 = getGrid(2);
-  const grid3 = getGrid(3);
-  const grid0 = getGrid(0);
-
-  for (let i = 0; i < 12; i++) {
-    const item1 = document.createElement("div");
-    item1.setAttribute("class", "grid-item");
-    grid1.appendChild(item1);
-
-    const item2 = document.createElement("div");
-    item2.setAttribute("class", "grid-item");
-    // item2.style = `grid-area: ${i}`;
-    grid2.appendChild(item2);
-
-    const item3 = document.createElement("div");
-    item3.setAttribute("class", "grid-item");
-    //   item3.style = `grid-area: ${i}`;
-    grid3.appendChild(item3);
-
-    const item0 = document.createElement("div");
-    item0.setAttribute("class", "grid-item");
-    //  item0.style = `grid-area: ${i}`;
-    grid0.appendChild(item0);
-  }
-})();
-
-function runGame() {
-  const word = makeWord(getCommand());
-  return word;
+function wordThread(num, words) {
+  words.push(fixWord());
+  setInterval(() => {
+    words.push(fixWord());
+    if (num >= 2000) {
+      num -= 100;
+    }
+  }, num);
+}
+function runGame(words) {
+  wordThread(2000, words);
+  setTimeout(() => {
+    wordThread(10000, words);
+    setTimeout(() => {
+      wordThread(5000, words);
+    }, 25000);
+  }, 50000);
 }
