@@ -3,7 +3,10 @@
 }
 
 span {
-  font-size: 1.5em;
+}
+
+.salt {
+  color: red;
 }
 
 #it {
@@ -27,9 +30,13 @@ span {
 }
 
 #board {
-  width: 80em;
-  height: 40em;
-  margin: 5em;
+  /* position: fixed; */
+  font-size: 2.5em;
+  width: 32em;
+  height: 16em;
+  margin: 2em;
+  /* background: aqua; */
+
   /* background: aqua; */
 }
 
