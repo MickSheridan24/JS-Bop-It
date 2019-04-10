@@ -1,31 +1,7 @@
 console.log("I'm going mad");
 const COMMANDS = ["Bop", "Spin", "Twist", "Pull", "Flick", "Shake"];
-const ADDITIONAL = [
-  "Buy",
-  "Sell",
-  "Hit",
-  "Slap",
-  "Bump",
-  "Dodge",
-  "Market",
-  "Program",
-  "Employ",
-  "Pity",
-  "Love",
-  "Hate"
-];
-const ADVANCED = [
-  "Vaporize",
-  "Obfuscate",
-  "Discombobulate",
-  "Jump-On",
-  "Xerox",
-  "Masticate",
-  "Defenestrate",
-  "Decapitate",
-  "Disembowel",
-  "Transmogrify"
-];
+const ADDITIONAL = ["Buy", "Sell", "Hit", "Slap", "Bump", "Dodge", "Market", "Program", "Employ", "Pity", "Love", "Hate"];
+const ADVANCED = ["Vaporize", "Obfuscate", "Discombobulate", "Jump-On", "Xerox", "Masticate", "Defenestrate", "Decapitate", "Disembowel", "Transmogrify"];
 
 const getCommand = () => {
   let unlocked = getScore() >= 10;
@@ -139,9 +115,7 @@ function makeWord(given, timer, salt = false) {
           this.typedString += this.untypedString.charAt(0);
           this.untypedString = this.untypedString.substr(1);
           if (this.timerString.length >= this.typedString.length) {
-            this.untypedBehind.innerText = this.untypedBehind.innerText.substr(
-              1
-            );
+            this.untypedBehind.innerText = this.untypedBehind.innerText.substr(1);
             this.typedBehind.innerText = this.typedString;
           } else {
             this.typedAhead.innerText += this.untypedAhead.innerText.charAt(0);
@@ -154,17 +128,8 @@ function makeWord(given, timer, salt = false) {
       }
     },
     progress: function() {
-      console.log(
-        "progressing",
-        "Timer",
-        this.timerString,
-        "Given",
-        this.givenString
-      );
-      if (
-        this.timerString.length === this.givenString.length &&
-        !this.isComplete
-      ) {
+      console.log("progressing", "Timer", this.timerString, "Given", this.givenString);
+      if (this.timerString.length === this.givenString.length && !this.isComplete) {
         alert("Game Over");
       } else {
         this.timerString += this.givenString.charAt(this.timerString.length);
