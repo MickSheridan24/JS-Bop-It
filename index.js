@@ -1,4 +1,3 @@
-console.log("I'm going mad");
 const COMMANDS = ["Bop", "Spin", "Twist", "Pull", "Flick", "Shake"];
 const ADDITIONAL = ["Buy", "Sell", "Hit", "Slap", "Bump", "Dodge", "Market", "Program", "Employ", "Pity", "Love", "Hate"];
 const ADVANCED = ["Vaporize", "Obfuscate", "Discombobulate", "Jump-On", "Xerox", "Masticate", "Defenestrate", "Decapitate", "Disembowel", "Transmogrify"];
@@ -39,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }, 250);
+
   runGame(words);
 
   document.addEventListener("keydown", e => {
@@ -48,109 +48,69 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function makeWord(given, timer, salt = false) {
-  //Produce the Divs and spans
-  const board = getBoard();
-  const xPoint = Math.floor(Math.random() * board.clientWidth);
-  const yPoint = Math.floor(Math.random() * board.clientHeight);
-
-  const container = document.createElement("div");
-  container.setAttribute("class", "word-card");
-  container.style = `left: ${xPoint}px; top: ${yPoint}px`;
-
-  const aheadSpan = document.createElement("span");
-  const behindSpan = document.createElement("span");
-  const untypedAhead = document.createElement("span");
-  const typedAhead = document.createElement("span");
-  const untypedBehind = document.createElement("span");
-  const typedBehind = document.createElement("span");
-
-  untypedAhead.setAttribute("class", "untyped");
-  untypedBehind.setAttribute("class", "untyped");
-  typedAhead.setAttribute("class", "typed");
-  typedBehind.setAttribute("class", "typed");
-  behindSpan.setAttribute("class", "behind");
-  aheadSpan.setAttribute("class", "ahead");
-
-  behindSpan.appendChild(typedBehind);
-  behindSpan.appendChild(untypedBehind);
-  aheadSpan.appendChild(typedAhead);
-  aheadSpan.appendChild(untypedAhead);
-
-  container.appendChild(behindSpan);
-  container.appendChild(aheadSpan);
-
-  const givenString = given;
-  let untypedString = given;
-  let typedString = "";
-  let timerString = "";
-
-  untypedAhead.innerText = givenString;
-  typedAhead.innerText = "";
-  typedBehind.innerText = "";
-  untypedBehind.innerText = "";
-
-  const word = {
-    isComplete: false,
-    container: container,
-    behindSpan: behindSpan,
-    aheadSpan: aheadSpan,
-    typedAhead: typedAhead,
-    typedBehind: typedBehind,
-    untypedAhead: untypedAhead,
-    untypedBehind: untypedBehind,
-    untypedString: untypedString,
-    typedString: typedString,
-    givenString: givenString,
-    timerString: "",
-    timer: timer,
-    currentTime: 0,
-    timerLetter: function() {
-      this.timer / this.givenString.length;
-    },
-
-    check: function(key) {
-      if (!this.isComplete) {
-        if (key.toUpperCase() === this.untypedString.charAt(0).toUpperCase()) {
-          this.typedString += this.untypedString.charAt(0);
-          this.untypedString = this.untypedString.substr(1);
-          if (this.timerString.length >= this.typedString.length) {
-            this.untypedBehind.innerText = this.untypedBehind.innerText.substr(1);
-            this.typedBehind.innerText = this.typedString;
-          } else {
-            this.typedAhead.innerText += this.untypedAhead.innerText.charAt(0);
-            this.untypedAhead.innerText = this.untypedAhead.innerText.substr(1);
-          }
-        }
-        if (this.typedString === this.givenString) {
-          this.complete();
-        }
-      }
-    },
-    progress: function() {
-      console.log("progressing", "Timer", this.timerString, "Given", this.givenString);
-      if (this.timerString.length === this.givenString.length && !this.isComplete) {
-        alert("Game Over");
-      } else {
-        this.timerString += this.givenString.charAt(this.timerString.length);
-        if (this.timerString.length > this.typedString.length) {
-          this.untypedBehind.innerText += this.untypedAhead.innerText.charAt(0);
-          this.untypedAhead.innerText = this.untypedAhead.innerText.substr(1);
-        } else {
-          this.typedBehind.innerText += this.typedAhead.innerText.charAt(0);
-          this.typedAhead.innerText = this.typedAhead.innerText.substr(1);
-        }
-      }
-    },
-    complete: function() {
-      this.container.remove();
-      const score = getScore();
-      score.textContent = parseInt(score.textContent) + 1;
-      this.isComplete = true;
+class Word {
+  constructor(given, timer) {
+    this.given = given;
+    this.currentTime = 0;
+    this.timer = timer;
+    this.untyped = given;
+    this.typed = "";
+    this.timerTyped = "";
+    this.complete = false;
+    this.initCard();
+  }
+  initCard() {
+    this.container = document.createElement("div");
+    this.letters = [];
+    const xPoint = Math.floor(Math.random() * board.clientWidth);
+    const yPoint = Math.floor(Math.random() * board.clientHeight);
+    this.container.setAttribute("class", "word-card");
+    this.container.style = `left: ${xPoint}px; top: ${yPoint}px`;
+    for (let ch = 0; ch < this.given.length; ch++) {
+      const sp = document.createElement("span");
+      sp.classList.add("untyped");
+      sp.innerHTML = this.given.charAt(ch);
+      this.letters.push(sp);
+      this.container.appendChild(sp);
     }
-  };
+  }
+  getSpan(index) {
+    return this.letters[index];
+  }
+  check(key) {
+    if (!this.isComplete) {
+      if (key.toUpperCase() === this.untyped.charAt(0).toUpperCase()) {
+        const span = this.getSpan(this.typed.length);
+        this.typed += this.untyped.charAt(0);
+        this.untyped = this.untyped.substr(1);
+        span.classList.remove("untyped");
+        span.classList.add("typed");
+      }
+      if (this.typed === this.given) {
+        this.container.remove();
+        const score = getScore();
+        score.textContent = parseInt(score.textContent) + 1;
+        this.isComplete = true;
+      }
+    }
+  }
 
-  return word;
+  progress() {
+    console.log("progressing", "Timer", this.timerTyped, "Given", this.given);
+    if (this.timerTyped.length === this.given.length && !this.isComplete) {
+      alert("Game Over");
+    } else {
+      const span = this.getSpan(this.timerTyped.length);
+      if (this.timerTyped.length === 0) {
+        span.classList.add("first-rounded");
+      } else {
+        this.getSpan(this.timerTyped.length - 1).classList.remove("last-rounded");
+      }
+      this.timerTyped += this.given.charAt(this.timerTyped.length);
+      span.classList.add("behind");
+      span.classList.add("last-rounded");
+    }
+  }
 }
 
 function getMain() {
@@ -165,7 +125,7 @@ function getBoard() {
   return document.getElementById("board");
 }
 function fixWord() {
-  const word = makeWord(getCommand(), 4);
+  const word = new Word(getCommand(), 4);
   const board = getBoard();
   board.appendChild(word.container);
   return word;
