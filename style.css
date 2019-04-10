@@ -21,12 +21,21 @@ span {
   color: rebeccapurple;
 }
 
+.first-rounded {
+  border-bottom-left-radius: 25px;
+  border-top-left-radius: 25px;
+}
+
+.last-rounded {
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+}
+
 .typed {
   color: greenyellow;
 }
 .behind {
   background: #ff020238;
-  border-radius: 25px;
 }
 
 #board {
