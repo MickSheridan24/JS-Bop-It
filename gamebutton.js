@@ -65,7 +65,7 @@ class GameButton {
         this.game.addPoints(1);
         this.button.remove();
       } else {
-        this.game.over();
+        //      this.game.over();
       }
     }
   }

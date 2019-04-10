@@ -10,6 +10,9 @@ class Game {
 
     activeGame = this;
     this.run();
+    this.catcher = new Catcher(this);
+    const moveCatcher = this.catcher.move.bind(this.catcher);
+    document.addEventListener("keydown", moveCatcher);
   }
 
   static getActiveGame() {

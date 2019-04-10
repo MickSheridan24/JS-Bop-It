@@ -60,3 +60,24 @@ button {
 .container {
   display: inline;
 }
+
+.catcher {
+  position: fixed;
+  text-align: center;
+  height: 50px;
+  width: 100px;
+  top: 700px;
+
+  color: blue;
+  border: 1px solid blue;
+  border-radius: 25px;
+}
+
+.flyer {
+  position: fixed;
+  text-align: center;
+
+  color: green;
+  border: 1px solid black;
+  border-radius: 25px;
+}

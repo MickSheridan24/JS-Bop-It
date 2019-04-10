@@ -95,7 +95,7 @@ class Word {
 
   progress() {
     if (this.timerTyped.length === this.given.length && !this.isComplete) {
-      this.game.over();
+      // this.game.over();
     } else {
       const index = this.timerTyped.length;
       const span = this.getSpan(index);
