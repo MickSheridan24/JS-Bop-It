@@ -5,14 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log(Game.getActiveGame());
 });
 
-const getCommand = () => {
-  let unlocked = getScore() >= 10;
-  if (Math.floor(Math.random() * 100) > 90 && ADVANCED.length > 0 && unlocked) {
-    return ADVANCED[Math.floor(Math.random() * ADVANCED.length)];
-  } else {
-    return COMMANDS[Math.floor(Math.random() * COMMANDS.length)];
-  }
-};
 function getMain() {
   return document.getElementById("main");
 }

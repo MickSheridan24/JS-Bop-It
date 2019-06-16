@@ -1,7 +1,3 @@
-const COMMANDS = ["Bop", "Spin", "Twist", "Pull", "Flick", "Shake"];
-const ADDITIONAL = ["Buy", "Sell", "Hit", "Slap", "Bump", "Dodge", "Market", "Program", "Employ", "Pity", "Love", "Hate"];
-const ADVANCED = ["Vaporize", "Obfuscate", "Discombobulate", "Jump-On", "Xerox", "Masticate", "Defenestrate", "Decapitate", "Disembowel", "Transmogrify"];
-
 class Word {
   constructor(game, given, timer, salt = true) {
     this.game = game;

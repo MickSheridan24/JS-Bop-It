@@ -2,6 +2,9 @@ let GameId = 0;
 let activeGame = null;
 class Game {
   constructor() {
+    this.vocabulary = ["Bop", "Spin", "Twist", "Pull", "Flick", "Shake"];
+    this.additional = ["Buy", "Sell", "Hit", "Slap", "Bump", "Dodge", "Market", "Program", "Employ", "Pity", "Love", "Hate"];
+    this.advanced = ["Vaporize", "Obfuscate", "Discombobulate", "Jump-On", "Xerox", "Masticate", "Defenestrate", "Decapitate", "Disembowel", "Transmogrify"];
     this.id = ++GameId;
     this.score = 0;
     this.active = true;
@@ -21,6 +24,14 @@ class Game {
     this.setTimer();
     this.runGame(this.words);
   }
+  getCommand = () => {
+    let unlocked = getScore() >= 10;
+    if (Math.floor(Math.random() * 100) > 90 && this.advanced.length > 0 && unlocked) {
+      return this.advanced[Math.floor(Math.random() * this.advanced.length)];
+    } else {
+      return this.vocabulary[Math.floor(Math.random() * this.vocabulary.length)];
+    }
+  };
 
   setTimer() {
     const gameTimer = setInterval(() => {
@@ -56,14 +67,14 @@ class Game {
 
   setDictionary() {
     const add = setInterval(() => {
-      if (ADDITIONAL.length > 0) {
-        const num = Math.floor(Math.random() * ADDITIONAL.length);
-        COMMANDS.push(ADDITIONAL[num]);
-        ADDITIONAL.splice(num, 1);
-      } else if (ADVANCED.length > 0) {
-        const num = Math.floor(Math.random() * ADVANCED.length);
-        COMMANDS.push(ADVANCED[num]);
-        ADVANCED.splice(num, 1);
+      if (this.additional.length > 0) {
+        const num = Math.floor(Math.random() * this.additional.length);
+        this.vocabulary.push(this.additional[num]);
+        this.additional.splice(num, 1);
+      } else if (this.advanced.length > 0) {
+        const num = Math.floor(Math.random() * this.advanced.length);
+        this.vocabulary.push(this.advanced[num]);
+        this.advanced.splice(num, 1);
       } else {
         clearInterval(add);
       }
@@ -80,7 +91,7 @@ class Game {
 
   fixWord() {
     let salted = Math.random() > 0.8;
-    const word = new Word(this, getCommand(), 6, salted);
+    const word = new Word(this, this.getCommand(), 6, salted);
     const board = getBoard();
     board.appendChild(word.container);
     return word;
